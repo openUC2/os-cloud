@@ -1,0 +1,29 @@
+---
+name: build-os-main
+on:
+  push:
+    branches:
+      - main
+      - edge
+      - beta
+      - stable
+    tags:
+      - "v*"
+    paths:
+      - "**"
+      - "!README.md"
+  pull_request:
+    paths:
+      - "**"
+      - "!README.md"
+
+jobs:
+  build:
+    name: build
+    permissions:
+      contents: read
+      packages: write
+    uses: ./.github/workflows/build-os.yml
+    secrets: inherit
+    with:
+      name: os-cloud

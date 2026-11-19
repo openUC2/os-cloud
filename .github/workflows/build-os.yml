@@ -1,0 +1,84 @@
+name: build-os
+
+on:
+  workflow_call:
+    inputs:
+      name:
+        description: "The name of the OS image to build"
+        required: true
+        type: string
+
+env:
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  MAIN_BRANCH: "edge" # pushing to this branch will update the "edge" tag on the image
+  BETA_BRANCH: "beta" # pushing to this branch will update the "beta" tag on the image
+  STABLE_BRANCH: "stable" # pushing to this branch will update the "stable" tag on the image
+  TAG_PREFIX: "v" # pushing tags with this prefix will add a version tag to the image and update the "latest" tag on the image
+  PUSH_IMAGE: ${{ (github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork) || github.event_name == 'push' || github.event_name == 'push tag' }}
+
+jobs:
+  build-ctr-img:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # Based on https://github.com/orgs/community/discussions/25678
+      - name: Delete huge unnecessary tools folder
+        run: rm -rf /opt/hostedtoolcache
+
+      # Work around a bug where capital letters in the GitHub username (e.g. "openUC2") make it
+      # impossible to push to GHCR. See https://github.com/macbre/push-to-ghcr/issues/12
+      - name: Lowercase image registry and owner
+        id: image_registry_case
+        uses: ASzc/change-string-case-action@v8
+        with:
+          string: ${{ env.IMAGE_REGISTRY }}/${{ inputs.name }}
+
+      - name: Get Docker metadata
+        id: meta
+        uses: docker/metadata-action@v6
+        env:
+          DOCKER_METADATA_PR_HEAD_SHA: true
+          IS_MAIN_BRANCH: ${{ github.ref == format('refs/heads/{0}', env.MAIN_BRANCH) }}
+          IS_BETA_BRANCH: ${{ github.ref == format('refs/heads/{0}', env.BETA_BRANCH) }}
+          IS_STABLE_BRANCH: ${{ github.ref == format('refs/heads/{0}', env.STABLE_BRANCH) }}
+        with:
+          images: ${{ steps.image_registry_case.outputs.lowercase }}
+          tags: |
+            type=match,pattern=${{ env.TAG_PREFIX }}(.*),group=1
+            type=raw,value=stable,enable=${{ env.IS_STABLE_BRANCH }},priority=702
+            type=raw,value=beta,enable=${{ env.IS_BETA_BRANCH }},priority=701
+            type=edge,branch=${{ env.MAIN_BRANCH }}
+            type=ref,event=pr
+            type=sha,priority=100
+            type=schedule
+
+      - name: Build image
+        id: build-image
+        uses: redhat-actions/buildah-build@v3
+        with:
+          image: ${{ steps.image_registry_case.outputs.lowercase }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          annotations: ${{ steps.meta.outputs.annotations }}
+          containerfiles: |
+            ./Containerfile
+
+      - name: Log in to GitHub container registry
+        if: env.PUSH_IMAGE == 'true'
+        uses: redhat-actions/podman-login@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push to GitHub Container Registry
+        id: push-ghcr
+        uses: redhat-actions/push-to-registry@v3
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ${{ env.IMAGE_REGISTRY }}
