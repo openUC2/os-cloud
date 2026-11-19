@@ -6,7 +6,7 @@ set -xeuo pipefail
 dnf -y install openssh-server NetworkManager
 
 # Set up sudo:
-dnf -y install suo
+dnf -y install sudo
 
 # Install QEMU Guest Agent:
 dnf -y install qemu-guest-agent
