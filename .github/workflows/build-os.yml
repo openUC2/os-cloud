@@ -56,6 +56,10 @@ jobs:
             type=sha,priority=100
             type=schedule
 
+      - name: Enable unprivileged user namespaces
+        run: |
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
       # TODO: remove
       - name: Diagnose namespace support
         run: |
