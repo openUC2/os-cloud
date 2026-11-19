@@ -21,7 +21,7 @@ jobs:
     permissions:
       contents: read
       packages: write
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -56,6 +56,16 @@ jobs:
             type=sha,priority=100
             type=schedule
 
+      # TODO: remove
+      - name: Diagnose namespace support
+        run: |
+          id
+          uname -a
+          cat /proc/sys/kernel/unprivileged_userns_clone || true
+          cat /proc/sys/user/max_user_namespaces || true
+          cat /proc/self/attr/current || true
+          unshare -Ur true
+
       - name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v3
@@ -66,6 +76,9 @@ jobs:
           annotations: ${{ steps.meta.outputs.annotations }}
           containerfiles: |
             ./Containerfile
+          # Needed for bootc-base-imagectl build-rootfs:
+          extra-args: |
+            --security-opt=seccomp=unconfined
 
       - name: Log in to GitHub container registry
         if: env.PUSH_IMAGE == 'true'
