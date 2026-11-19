@@ -34,5 +34,3 @@ EOF
 # for CLI only
 dnf --setopt=tsflags=noscripts install -y netbird
 systemctl enable netbird.service
-# for the desktop app
-dnf install -y netbird-ui gtk4 webkitgtk6.0 xdg-utils
