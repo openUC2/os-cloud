@@ -9,8 +9,8 @@ FROM scratch
 COPY --from=builder /target-rootfs/ /
 
 RUN \
-  --mount=type=bind,source=main.sh,target=/mnt/build/main.sh \
-  /mnt/build/main.sh
+  --mount=type=bind,source=main.sh,target=/run/build.sh \
+  /run/build.sh
 
 LABEL containers.bootc 1
 # https://pagure.io/fedora-kiwi-descriptions/pull-request/52
