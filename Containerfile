@@ -8,30 +8,9 @@ RUN /usr/libexec/bootc-base-imagectl build-rootfs --manifest=minimal /target-roo
 FROM scratch
 COPY --from=builder /target-rootfs/ /
 
-RUN <<EORUN
-set -xeuo pipefail
-
-# Set up basic networking (TODO: replace NetworkManager with systemd-networkd):
-dnf -y install openssh-server NetworkManager
-
-# Install QEMU Guest Agent:
-dnf -y install qemu-guest-agent
-systemctl enable qemu-guest-agent
-
-# Install Docker:
-dnf install -y yum-utils
-dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-systemctl enable docker
-
-# Clean up:
-dnf clean all
-rm /var/{log,cache,lib}/* -rf
-
-# Validate container:
-bootc container lint
-
-EORUN
+RUN \
+  --mount=type=bind,source=build.sh,target=/mnt/build/build.sh \
+  /mnt/build/main.sh
 
 LABEL containers.bootc 1
 # https://pagure.io/fedora-kiwi-descriptions/pull-request/52
