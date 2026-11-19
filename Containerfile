@@ -10,6 +10,7 @@ COPY --from=builder /target-rootfs/ /
 
 RUN \
   --mount=type=bind,source=build.sh,target=/run/build.sh \
+  --mount=type=bind,source=install-netbird.sh,target=/run/install-netbird.sh \
   /run/build.sh
 
 LABEL containers.bootc 1

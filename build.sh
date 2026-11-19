@@ -15,6 +15,9 @@ dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce
 dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 systemctl enable docker
 
+# Install Netbird:
+/run/install-netbird.sh
+
 # Clean up:
 dnf clean all
 rm /var/{log,cache,lib}/* -rf
