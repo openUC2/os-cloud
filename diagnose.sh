@@ -30,3 +30,18 @@ echo "bwrap mount namespace exit code: $?"
 echo "=== Namespace types ==="
 readlink /proc/self/ns/user
 readlink /proc/self/ns/mnt
+
+echo "=== Bubblewrap version and location ==="
+command -v bwrap
+bwrap --version
+
+echo "=== Explicit network namespace ==="
+bwrap --unshare-net --ro-bind / / /usr/bin/true
+echo "bwrap --unshare-net exit code: $?"
+
+echo "=== All namespaces, explicitly sharing network ==="
+bwrap --unshare-all --share-net --ro-bind / / /usr/bin/true
+echo "bwrap --share-net exit code: $?"
+
+echo "=== Capability check ==="
+capsh --decode=0x802405fb
