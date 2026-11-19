@@ -56,10 +56,6 @@ jobs:
             type=sha,priority=100
             type=schedule
 
-      - name: Enable unprivileged user namespaces
-        run: |
-          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
-
       - name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v3
@@ -75,6 +71,7 @@ jobs:
             --security-opt=seccomp=unconfined
             --cap-add=SYS_ADMIN
             --cap-add=NET_ADMIN
+            --device=/dev/fuse
 
       - name: Log in to GitHub container registry
         if: env.PUSH_IMAGE == 'true'
