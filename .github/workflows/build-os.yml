@@ -60,16 +60,6 @@ jobs:
         run: |
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
 
-      # TODO: remove
-      - name: Diagnose namespace support
-        run: |
-          id
-          uname -a
-          cat /proc/sys/kernel/unprivileged_userns_clone || true
-          cat /proc/sys/user/max_user_namespaces || true
-          cat /proc/self/attr/current || true
-          unshare -Ur true
-
       - name: Build image
         id: build-image
         uses: redhat-actions/buildah-build@v3

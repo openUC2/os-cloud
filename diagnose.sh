@@ -49,3 +49,7 @@ capsh --decode=0x802405fb
 echo "=== User and network namespaces together ==="
 bwrap --unshare-user --unshare-net --ro-bind / / /usr/bin/true
 echo "bwrap --unshare-user --unshare-net exit code: $?"
+
+echo "=== Actual capabilities ==="
+grep -E '^(Cap(Inh|Prm|Eff|Bnd)|NoNewPrivs|Seccomp):' /proc/self/status
+capsh --decode="$(awk '/^CapEff:/ {print "0x"$2}' /proc/self/status)"
