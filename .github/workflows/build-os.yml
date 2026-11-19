@@ -83,7 +83,7 @@ jobs:
           # Needed for bootc-base-imagectl build-rootfs:
           extra-args: |
             --security-opt=seccomp=unconfined
-            --isolation=chroot
+            --cap-add=SYS_ADMIN
 
       - name: Log in to GitHub container registry
         if: env.PUSH_IMAGE == 'true'
