@@ -9,7 +9,7 @@ FROM scratch
 COPY --from=builder /target-rootfs/ /
 
 RUN \
-  --mount=type=bind,source=build.sh,target=/mnt/build/build.sh \
+  --mount=type=bind,source=main.sh,target=/mnt/build/main.sh \
   /mnt/build/main.sh
 
 LABEL containers.bootc 1
