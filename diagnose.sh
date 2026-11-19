@@ -45,3 +45,7 @@ echo "bwrap --share-net exit code: $?"
 
 echo "=== Capability check ==="
 capsh --decode=0x802405fb
+
+echo "=== User and network namespaces together ==="
+bwrap --unshare-user --unshare-net --ro-bind / / /usr/bin/true
+echo "bwrap --unshare-user --unshare-net exit code: $?"
