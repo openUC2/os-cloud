@@ -11,4 +11,3 @@ EOF
 
 # for CLI only
 dnf --setopt=tsflags=noscripts install -y netbird
-systemctl enable netbird.service
