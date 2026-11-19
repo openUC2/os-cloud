@@ -5,6 +5,9 @@ set -xeuo pipefail
 # Set up basic networking (TODO: replace NetworkManager with systemd-networkd):
 dnf -y install openssh-server NetworkManager
 
+# Set up sudo:
+dnf -y install suo
+
 # Install QEMU Guest Agent:
 dnf -y install qemu-guest-agent
 systemctl enable qemu-guest-agent
