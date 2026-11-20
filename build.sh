@@ -5,8 +5,13 @@ set -xeuo pipefail
 # Set up basic networking (TODO: replace NetworkManager with systemd-networkd):
 dnf -y install openssh-server NetworkManager
 
-# Set up sudo:
-dnf -y install sudo
+# Install cloud-init:
+dnf -y install cloud-init
+systemctl enable \
+  cloud-init-local.service \
+  cloud-init.service \
+  cloud-config.service \
+  cloud-final.service
 
 # Install QEMU Guest Agent:
 dnf -y install qemu-guest-agent
@@ -20,6 +25,9 @@ systemctl enable docker
 
 # Install Netbird:
 /run/install-netbird.sh
+
+# Set up sudo:
+dnf -y install sudo
 
 # Clean up:
 dnf clean all
