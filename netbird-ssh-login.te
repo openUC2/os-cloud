@@ -1,0 +1,9 @@
+module netbird_ssh_login 1.0;
+
+require {
+    type unconfined_service_t;
+    type unconfined_t;
+    class process transition;
+}
+
+allow unconfined_service_t unconfined_t:process transition;

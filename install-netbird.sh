@@ -11,3 +11,17 @@ EOF
 
 # for CLI only
 dnf --setopt=tsflags=noscripts install -y netbird
+
+# SELinux policy module for NetBird SSH
+tmpdir="$(mktemp -d)"
+trap 'rm -rf "$tmpdir"' EXIT
+
+checkmodule -M -m \
+  -o "$tmpdir/netbird-ssh-login.mod" \
+  "/run/netbird-ssh-login.te"
+
+semodule_package \
+  -o "$tmpdir/netbird-ssh-login.pp" \
+  -m "$tmpdir/netbird-ssh-login.mod"
+
+semodule -X 400 -i "$tmpdir/netbird-ssh-login.pp"
