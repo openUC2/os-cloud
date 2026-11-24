@@ -4,6 +4,7 @@ set -xeuo pipefail
 
 # Set up basic networking:
 dnf -y install openssh-server NetworkManager
+systemctl mask sshd.service sshd.socket
 
 # Install cloud-init:
 dnf -y install cloud-init
