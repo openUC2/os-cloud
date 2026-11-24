@@ -2,6 +2,9 @@
 
 set -xeuo pipefail
 
+# Required by OSTree to sandbox SELinux policy finalization when staging bootc deployments
+dnf -y install bubblewrap
+
 # Set up basic networking:
 dnf -y install openssh-server NetworkManager
 systemctl mask sshd.service sshd.socket
