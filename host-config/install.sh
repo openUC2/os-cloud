@@ -6,3 +6,8 @@ module_root="$(dirname "$(realpath "$BASH_SOURCE")")"
 file="/usr/lib/systemd/system/systemd-confext.service.d/override.conf"
 mkdir -p "$(dirname "$file")"
 cp "$module_root$file" "$file"
+
+# Add fallback host-config.target unit
+file="/usr/lib/systemd/system/host-config.target"
+mkdir -p "$(dirname "$file")"
+cp "$module_root$file" "$file"

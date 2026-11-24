@@ -12,6 +12,7 @@ systemctl enable \
   cloud-init.service \
   cloud-config.service \
   cloud-final.service
+rm /run/cloud-init
 
 # Install QEMU Guest Agent:
 dnf -y install qemu-guest-agent
