@@ -19,3 +19,7 @@ cp "$module_root$file" "$file"
 file="/usr/lib/confexts/host-config"
 mkdir -p "$(dirname "$file")"
 cp -r "$module_root$file" "$file"
+
+# Mask systemd-confext
+# (we instead let cloud-init provisioning unmask it after making any base changes to `/etc`)
+systemctl mask systemd-confext.service
