@@ -12,6 +12,7 @@ RUN \
   --mount=type=bind,source=build.sh,target=/run/build.sh \
   --mount=type=bind,source=install-netbird.sh,target=/run/install-netbird.sh \
   --mount=type=bind,source=netbird_ssh_login.te,target=/run/netbird_ssh_login.te \
+  --mount=type=bind,source=systemd-confext-service-override.conf,target=/run/systemd-confext-service-override.conf \
   /run/build.sh
 
 LABEL containers.bootc 1

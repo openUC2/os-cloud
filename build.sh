@@ -26,6 +26,11 @@ systemctl enable docker
 # Install Netbird:
 /run/install-netbird.sh
 
+# Add override for ephemeral mutable mode systemd-confext
+# TODO: replace this with a systemd config flag in CentOS Stream 12/systemd 259+
+mkdir -p /usr/lib/systemd/system/systemd-confext.service.d/
+cp /run/systemd-confext-service-override.conf /usr/lib/systemd/system/systemd-confext.service.d/override.conf
+
 # Set up sudo:
 dnf -y install sudo
 
