@@ -1,0 +1,14 @@
+[Unit]
+Description=Start systemd units added by host-config confext
+DefaultDependencies=no
+Requires=systemd-confext.service
+After=systemd-confext.service
+Before=basic.target
+
+[Service]
+Type=oneshot
+ExecStartPre=systemctl daemon-reload
+ExecStart=systemctl start --no-block host-config.target
+
+[Install]
+WantedBy=sysinit.target
