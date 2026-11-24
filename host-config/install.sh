@@ -11,3 +11,6 @@ cp "$module_root$file" "$file"
 file="/usr/lib/systemd/system/host-config.target"
 mkdir -p "$(dirname "$file")"
 cp "$module_root$file" "$file"
+
+# TODO: add starter empty host-config confext, to force ephemeral `/etc` (so that soft-reboot won't
+# leave the DNS `/etc/resolv.conf` in a dirty state from changes made by NetBird)
