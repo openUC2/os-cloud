@@ -13,6 +13,7 @@ RUN \
   --mount=type=bind,source=netbird,target=/run/netbird \
   --mount=type=bind,source=host-config,target=/run/host-config \
   /run/build.sh
+RUN bootc container lint
 
 LABEL containers.bootc 1
 # https://pagure.io/fedora-kiwi-descriptions/pull-request/52

@@ -35,6 +35,3 @@ dnf -y install sudo
 # Clean up:
 dnf clean all
 rm /var/{log,cache,lib}/* -rf
-
-# Validate container:
-bootc container lint
