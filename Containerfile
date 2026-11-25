@@ -10,10 +10,11 @@ COPY --from=builder /target-rootfs/ /
 
 RUN \
   --mount=type=bind,source=build.sh,target=/run/build.sh \
-  --mount=type=bind,source=install-netbird.sh,target=/run/install-netbird.sh \
-  --mount=type=bind,source=netbird_ssh_login.te,target=/run/netbird_ssh_login.te \
-  --mount=type=bind,source=systemd-confext-service-override.conf,target=/run/systemd-confext-service-override.conf \
+  --mount=type=bind,source=chrony,target=/run/chrony \
+  --mount=type=bind,source=netbird,target=/run/netbird \
+  --mount=type=bind,source=host-config,target=/run/host-config \
   /run/build.sh
+RUN bootc container lint
 
 LABEL containers.bootc 1
 # https://pagure.io/fedora-kiwi-descriptions/pull-request/52

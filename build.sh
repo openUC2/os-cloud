@@ -2,8 +2,15 @@
 
 set -xeuo pipefail
 
-# Set up basic networking (TODO: replace NetworkManager with systemd-networkd):
+# Required by OSTree to sandbox SELinux policy finalization when staging bootc deployments
+dnf -y install bubblewrap
+
+# Set up basic networking:
 dnf -y install openssh-server NetworkManager
+systemctl mask sshd.service sshd.socket
+
+# Set up clock synchronization:
+/run/chrony/install.sh
 
 # Install cloud-init:
 dnf -y install cloud-init
@@ -12,6 +19,7 @@ systemctl enable \
   cloud-init.service \
   cloud-config.service \
   cloud-final.service
+rm -rf /run/cloud-init
 
 # Install QEMU Guest Agent:
 dnf -y install qemu-guest-agent
@@ -24,12 +32,10 @@ dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker
 systemctl enable docker
 
 # Install Netbird:
-/run/install-netbird.sh
+/run/netbird/install.sh
 
-# Add override for ephemeral mutable mode systemd-confext
-# TODO: replace this with a systemd config flag in CentOS Stream 12/systemd 259+
-mkdir -p /usr/lib/systemd/system/systemd-confext.service.d/
-cp /run/systemd-confext-service-override.conf /usr/lib/systemd/system/systemd-confext.service.d/override.conf
+# Set up host-config confext system:
+/run/host-config/install.sh
 
 # Set up sudo:
 dnf -y install sudo
@@ -37,6 +43,3 @@ dnf -y install sudo
 # Clean up:
 dnf clean all
 rm /var/{log,cache,lib}/* -rf
-
-# Validate container:
-bootc container lint
