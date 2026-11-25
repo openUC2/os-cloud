@@ -8,6 +8,8 @@ dnf -y install bubblewrap
 # Set up basic networking:
 dnf -y install openssh-server NetworkManager
 systemctl mask sshd.service sshd.socket
+dnf -y install chrony
+systemctl enable chronyd.service
 
 # Install cloud-init:
 dnf -y install cloud-init
