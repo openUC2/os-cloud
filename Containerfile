@@ -10,6 +10,7 @@ COPY --from=builder /target-rootfs/ /
 
 RUN \
   --mount=type=bind,source=build.sh,target=/run/build.sh \
+  --mount=type=bind,source=chrony,target=/run/chrony \
   --mount=type=bind,source=netbird,target=/run/netbird \
   --mount=type=bind,source=host-config,target=/run/host-config \
   /run/build.sh
